@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IndicPage-OCR | DAS 2026</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --ink: #222733;
+            --muted: #596273;
+            --line: #dde3ec;
+            --soft: #f6f8fb;
+            --blue: #1f66d1;
+            --green: #14815f;
+            --red: #b73535;
+            --gold: #9a6a12;
+            --panel: #ffffff;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--ink);
+            background: #ffffff;
+            line-height: 1.6;
+            padding: 22px;
+        }
+
+        .container {
+            max-width: 1040px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            padding: 24px 0 18px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .project-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--green);
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            font-size: 13px;
+            margin-bottom: 16px;
+        }
+
+        .project-label::before,
+        .project-label::after {
+            content: "";
+            width: 42px;
+            height: 1px;
+            background: var(--line);
+        }
+
+        .main-title {
+            font-size: 38px;
+            line-height: 1.16;
+            margin: 0 auto 18px;
+            max-width: 920px;
+        }
+
+        .subtitle {
+            max-width: 840px;
+            margin: 0 auto 18px;
+            color: var(--muted);
+            font-size: 18px;
+        }
+
+        .authors {
+            color: var(--blue);
+            font-size: 18px;
+            margin-bottom: 6px;
+        }
+
+        .affiliation {
+            color: var(--muted);
+            font-size: 15px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 30px 0;
+        }
+
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 42px;
+            padding: 10px 18px;
+            color: #ffffff;
+            background: #384150;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 650;
+            border: 1px solid #384150;
+        }
+
+        .nav-btn:hover {
+            background: #202733;
+            border-color: #202733;
+        }
+
+        .nav-btn.primary {
+            background: var(--blue);
+            border-color: var(--blue);
+        }
+
+        .nav-btn.secondary {
+            color: var(--ink);
+            background: #ffffff;
+            border-color: var(--line);
+        }
+
+        .nav-btn.disabled {
+            color: #7b8494;
+            background: #f0f2f6;
+            border-color: #e4e8ef;
+            cursor: default;
+            pointer-events: none;
+        }
+
+        .acceptance {
+            text-align: center;
+            color: var(--red);
+            font-size: 18px;
+            font-weight: 750;
+            margin: 18px auto 42px;
+            padding: 14px 18px;
+            background: #fff6f5;
+            border: 1px solid #f0d1cf;
+            border-radius: 8px;
+            max-width: 760px;
+        }
+
+        .section {
+            margin: 48px 0;
+        }
+
+        .section-title {
+            font-size: 25px;
+            line-height: 1.2;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--line);
+        }
+
+        .lead {
+            color: var(--muted);
+            font-size: 17px;
+            max-width: 900px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 16px;
+            margin-top: 22px;
+        }
+
+        .stat-item {
+            border: 1px solid var(--line);
+            border-left: 4px solid var(--blue);
+            border-radius: 8px;
+            padding: 18px;
+            background: var(--soft);
+        }
+
+        .stat-item:nth-child(2) {
+            border-left-color: var(--green);
+        }
+
+        .stat-item:nth-child(3) {
+            border-left-color: var(--gold);
+        }
+
+        .stat-item:nth-child(4) {
+            border-left-color: var(--red);
+        }
+
+        .stat-number {
+            display: block;
+            font-size: 27px;
+            font-weight: 800;
+            color: var(--ink);
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .contribution-list {
+            list-style: none;
+        }
+
+        .contribution-item {
+            position: relative;
+            padding-left: 20px;
+            margin: 17px 0;
+            color: var(--muted);
+        }
+
+        .contribution-item::before {
+            content: "";
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--blue);
+            position: absolute;
+            top: 10px;
+            left: 0;
+        }
+
+        .highlight {
+            color: var(--ink);
+            font-weight: 750;
+        }
+
+        .image-container {
+            margin: 26px 0 0;
+            text-align: center;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: auto;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            box-shadow: 0 8px 22px rgba(34, 39, 51, 0.08);
+            background: #ffffff;
+        }
+
+        .image-caption {
+            color: var(--muted);
+            font-size: 14px;
+            font-style: italic;
+            margin-top: 10px;
+        }
+
+        .method-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+            gap: 22px;
+            align-items: start;
+        }
+
+        .method-note {
+            background: var(--soft);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .method-note h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .method-note p {
+            color: var(--muted);
+            margin-bottom: 12px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th,
+        td {
+            border: 1px solid var(--line);
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background: var(--soft);
+            color: var(--ink);
+        }
+
+        .best-result {
+            background: #edf8f3;
+            font-weight: 750;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            border: 1px solid var(--line);
+            background: #ffffff;
+            color: var(--ink);
+            border-radius: 8px;
+            padding: 9px 14px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .tab-btn.active {
+            background: var(--blue);
+            color: #ffffff;
+            border-color: var(--blue);
+        }
+
+        .result-panel {
+            display: none;
+        }
+
+        .result-panel.active {
+            display: block;
+        }
+
+        .result-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
+            gap: 20px;
+            align-items: start;
+        }
+
+        .result-preview {
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            overflow: hidden;
+            background: #ffffff;
+            box-shadow: 0 8px 22px rgba(34, 39, 51, 0.08);
+        }
+
+        .result-preview img {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        .result-links {
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 16px;
+            background: var(--soft);
+        }
+
+        .result-links h3 {
+            font-size: 18px;
+            margin-bottom: 12px;
+        }
+
+        .link-list {
+            display: grid;
+            gap: 9px;
+        }
+
+        .result-link {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 14px;
+            min-height: 40px;
+            padding: 9px 12px;
+            color: var(--ink);
+            background: #ffffff;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 650;
+        }
+
+        .result-link span:last-child {
+            color: var(--blue);
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .citation-box {
+            background: var(--soft);
+            border-left: 4px solid var(--blue);
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        pre {
+            margin-top: 14px;
+            padding: 18px;
+            background: #ffffff;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            font-family: "Courier New", Courier, monospace;
+            font-size: 14px;
+            line-height: 1.55;
+        }
+
+        .footer {
+            margin-top: 58px;
+            padding: 22px 0;
+            text-align: center;
+            color: var(--muted);
+            border-top: 1px solid var(--line);
+            font-size: 14px;
+        }
+
+        @media (max-width: 860px) {
+            body {
+                padding: 16px;
+            }
+
+            .main-title {
+                font-size: 30px;
+            }
+
+            .subtitle {
+                font-size: 16px;
+            }
+
+            .stats-grid,
+            .method-grid,
+            .result-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .project-label::before,
+            .project-label::after {
+                width: 22px;
+            }
+
+            .main-title {
+                font-size: 25px;
+            }
+
+            .nav-buttons {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .nav-btn {
+                width: 100%;
+            }
+
+            th,
+            td {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="container">
+        <header class="header">
+            <div class="project-label">Project Page</div>
+            <h1 class="main-title">IndicPage-OCR: Adapting Vision-Language Models for Multilingual Handwritten Page Recognition</h1>
+            <p class="subtitle">
+                A document OCR system for handwritten Indic-language pages, designed to reduce the recognition gap between open OCR systems and commercial OCR services.
+            </p>
+            <div class="authors">Shaon Bhattacharya, Ajoy Mondal, and C. V. Jawahar</div>
+            <div class="affiliation">CVIT, International Institute of Information Technology Hyderabad</div>
+        </header>
+
+        <nav class="nav-buttons" aria-label="Project links">
+            <a class="nav-btn primary" href="#overview">Overview</a>
+            <a class="nav-btn" href="#method">Method</a>
+            <a class="nav-btn" href="#results">Results</a>
+            <a class="nav-btn secondary" href="images/Introduction_2.pdf" target="_blank" rel="noopener">Teaser PDF</a>
+            <a class="nav-btn disabled" href="#" aria-disabled="true">Paper Coming Soon</a>
+            <a class="nav-btn disabled" href="#" aria-disabled="true">Code Coming Soon</a>
+        </nav>
+
+        <div class="acceptance">
+            Accepted at the 17th IAPR International Workshop on Document Analysis Systems, DAS 2026.
+        </div>
+
+        <section class="section" id="overview">
+            <h2 class="section-title">Overview</h2>
+            <p class="lead">
+                Handwritten page OCR in Indian languages remains difficult because pages contain diverse scripts, dense line layouts, writer-specific character shapes, and real-world scanning artifacts. IndicPage-OCR adapts a vision-language OCR backbone for full-page handwritten recognition and evaluates it across Bengali, Hindi, Tamil, and Telugu examples against strong open and commercial baselines.
+            </p>
+
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">4</span>
+                    <div class="stat-label">Indic scripts shown in qualitative results</div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">0.3333</span>
+                    <div class="stat-label">WER gap reduction shown in the teaser</div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">0.2283</span>
+                    <div class="stat-label">CER gap reduction shown in the teaser</div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">DAS</span>
+                    <div class="stat-label">Accepted paper, 2026</div>
+                </div>
+            </div>
+
+            <div class="image-container">
+                <img src="images/previews/introduction.png" alt="IndicPage-OCR teaser comparison with OCR baselines">
+                <div class="image-caption">Teaser comparison: IndicPage-OCR reduces the gap between free OCR systems and commercial OCR systems on handwritten page recognition.</div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">Key Contributions</h2>
+            <ul class="contribution-list">
+                <li class="contribution-item">
+                    <span class="highlight">Full-page handwritten OCR:</span> IndicPage-OCR targets complete handwritten page images instead of isolated words or small text crops.
+                </li>
+                <li class="contribution-item">
+                    <span class="highlight">Multigranular visual input:</span> The pipeline combines page-level, line-level, and word-level evidence before decoding text.
+                </li>
+                <li class="contribution-item">
+                    <span class="highlight">Parameter-efficient adaptation:</span> The method adapts a GOT-OCR 2.0 style vision-language backbone with a low-rank decoder update.
+                </li>
+                <li class="contribution-item">
+                    <span class="highlight">Broad qualitative evaluation:</span> The project page includes Bengali, Hindi, Tamil, and Telugu result panels with links to input, ground truth, and baseline outputs.
+                </li>
+            </ul>
+        </section>
+
+        <section class="section" id="method">
+            <h2 class="section-title">Method</h2>
+            <div class="method-grid">
+                <div class="image-container">
+                    <img src="images/previews/pipeline.png" alt="IndicPage-OCR pipeline">
+                    <div class="image-caption">Pipeline overview: page encoder, multigranular visual input, pretrained GOT-OCR 2.0 backbone, low-rank decoder adaptation, and digitized text output.</div>
+                </div>
+                <div class="method-note">
+                    <h3>Model Adaptation</h3>
+                    <p>
+                        The visual page is represented at multiple granularities so the decoder can preserve both local handwriting cues and global reading order.
+                    </p>
+                    <p>
+                        The adaptation strategy keeps the pretrained backbone central while adding a lightweight low-rank update to specialize the decoder for handwritten Indic pages.
+                    </p>
+                    <a class="nav-btn secondary" href="images/pipeline_hw_page.pdf" target="_blank" rel="noopener">Open Pipeline PDF</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">Teaser Metrics</h2>
+            <p class="lead">
+                The local teaser figure reports average WER and CER for free OCR, commercial OCR, and IndicPage-OCR. The table below mirrors those headline values for quick scanning.
+            </p>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>System Group</th>
+                            <th>WER Avg.</th>
+                            <th>CER Avg.</th>
+                            <th>Note</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Free OCR</td>
+                            <td>0.5000</td>
+                            <td>0.2574</td>
+                            <td>Open/free OCR baseline average from teaser</td>
+                        </tr>
+                        <tr>
+                            <td>Commercial OCR</td>
+                            <td>0.0863</td>
+                            <td>0.0168</td>
+                            <td>Commercial OCR reference average from teaser</td>
+                        </tr>
+                        <tr class="best-result">
+                            <td>IndicPage-OCR</td>
+                            <td>Gap reduced by 0.3333</td>
+                            <td>Gap reduced by 0.2283</td>
+                            <td>Reported performance gap reduction from teaser</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="section" id="results">
+            <h2 class="section-title">Qualitative Results</h2>
+            <p class="lead">
+                Browse one sample per language. Each panel shows an IndicPage-OCR preview and links to the full PDF outputs from all available systems.
+            </p>
+
+            <div class="tabs" role="tablist" aria-label="Language result tabs">
+                <button class="tab-btn active" data-target="#hindi" type="button">Hindi</button>
+                <button class="tab-btn" data-target="#bengali" type="button">Bengali</button>
+                <button class="tab-btn" data-target="#tamil" type="button">Tamil</button>
+                <button class="tab-btn" data-target="#telugu" type="button">Telugu</button>
+            </div>
+
+            <div class="result-panel active" id="hindi">
+                <div class="result-layout">
+                    <div class="result-preview">
+                        <img src="results/previews/hindi_ours.png" alt="Hindi IndicPage-OCR result preview">
+                    </div>
+                    <div class="result-links">
+                        <h3>Hindi Sample</h3>
+                        <div class="link-list">
+                            <a class="result-link" href="results/hindi/input_50777_hindi.pdf" target="_blank" rel="noopener"><span>Input</span><span>PDF</span></a>
+                            <a class="result-link" href="results/hindi/gt_50777_hindi.pdf" target="_blank" rel="noopener"><span>Ground Truth</span><span>PDF</span></a>
+                            <a class="result-link" href="results/hindi/Ours_50777_hindi.pdf" target="_blank" rel="noopener"><span>IndicPage-OCR</span><span>PDF</span></a>
+                            <a class="result-link" href="results/hindi/gemini_50777_hindi.pdf" target="_blank" rel="noopener"><span>Gemini</span><span>PDF</span></a>
+                            <a class="result-link" href="results/hindi/deepseekocr_50777_hindi.pdf" target="_blank" rel="noopener"><span>DeepSeek OCR</span><span>PDF</span></a>
+                            <a class="result-link" href="results/hindi/chandra_50777_hindi.pdf" target="_blank" rel="noopener"><span>Chandra OCR</span><span>PDF</span></a>
+                            <a class="result-link" href="results/hindi/SARVAM_50777_hindi.pdf" target="_blank" rel="noopener"><span>SARVAM OCR</span><span>PDF</span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="result-panel" id="bengali">
+                <div class="result-layout">
+                    <div class="result-preview">
+                        <img src="results/previews/bengali_ours.png" alt="Bengali IndicPage-OCR result preview">
+                    </div>
+                    <div class="result-links">
+                        <h3>Bengali Sample</h3>
+                        <div class="link-list">
+                            <a class="result-link" href="results/bengali/input_152257_beng.pdf" target="_blank" rel="noopener"><span>Input</span><span>PDF</span></a>
+                            <a class="result-link" href="results/bengali/gt_152257_beng.pdf" target="_blank" rel="noopener"><span>Ground Truth</span><span>PDF</span></a>
+                            <a class="result-link" href="results/bengali/Ours_152257_beng.pdf" target="_blank" rel="noopener"><span>IndicPage-OCR</span><span>PDF</span></a>
+                            <a class="result-link" href="results/bengali/gemini_152257_beng.pdf" target="_blank" rel="noopener"><span>Gemini</span><span>PDF</span></a>
+                            <a class="result-link" href="results/bengali/deepseekocr_152257_beng.pdf" target="_blank" rel="noopener"><span>DeepSeek OCR</span><span>PDF</span></a>
+                            <a class="result-link" href="results/bengali/chandra_152257_beng.pdf" target="_blank" rel="noopener"><span>Chandra OCR</span><span>PDF</span></a>
+                            <a class="result-link" href="results/bengali/SARVAM_152257_beng.pdf" target="_blank" rel="noopener"><span>SARVAM OCR</span><span>PDF</span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="result-panel" id="tamil">
+                <div class="result-layout">
+                    <div class="result-preview">
+                        <img src="results/previews/tamil_ours.png" alt="Tamil IndicPage-OCR result preview">
+                    </div>
+                    <div class="result-links">
+                        <h3>Tamil Sample</h3>
+                        <div class="link-list">
+                            <a class="result-link" href="results/tamil/input_274994_tamil.pdf" target="_blank" rel="noopener"><span>Input</span><span>PDF</span></a>
+                            <a class="result-link" href="results/tamil/gt_274994_tamil.pdf" target="_blank" rel="noopener"><span>Ground Truth</span><span>PDF</span></a>
+                            <a class="result-link" href="results/tamil/Ours_274994_tamil.pdf" target="_blank" rel="noopener"><span>IndicPage-OCR</span><span>PDF</span></a>
+                            <a class="result-link" href="results/tamil/gemini_274994_tamil.pdf" target="_blank" rel="noopener"><span>Gemini</span><span>PDF</span></a>
+                            <a class="result-link" href="results/tamil/deepseekocr_274994_tamil.pdf" target="_blank" rel="noopener"><span>DeepSeek OCR</span><span>PDF</span></a>
+                            <a class="result-link" href="results/tamil/chandra_274994_tamil.pdf" target="_blank" rel="noopener"><span>Chandra OCR</span><span>PDF</span></a>
+                            <a class="result-link" href="results/tamil/SARVAM_274994_tamil.pdf" target="_blank" rel="noopener"><span>SARVAM OCR</span><span>PDF</span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="result-panel" id="telugu">
+                <div class="result-layout">
+                    <div class="result-preview">
+                        <img src="results/previews/telugu_ours.png" alt="Telugu IndicPage-OCR result preview">
+                    </div>
+                    <div class="result-links">
+                        <h3>Telugu Sample</h3>
+                        <div class="link-list">
+                            <a class="result-link" href="results/telugu/input_telugu_177509.pdf" target="_blank" rel="noopener"><span>Input</span><span>PDF</span></a>
+                            <a class="result-link" href="results/telugu/gt_177509_telugu.pdf" target="_blank" rel="noopener"><span>Ground Truth</span><span>PDF</span></a>
+                            <a class="result-link" href="results/telugu/Ours_177509_telugu.pdf" target="_blank" rel="noopener"><span>IndicPage-OCR</span><span>PDF</span></a>
+                            <a class="result-link" href="results/telugu/gemini_177509_telugu.pdf" target="_blank" rel="noopener"><span>Gemini</span><span>PDF</span></a>
+                            <a class="result-link" href="results/telugu/deepseekocr_177509_telugu.pdf" target="_blank" rel="noopener"><span>DeepSeek OCR</span><span>PDF</span></a>
+                            <a class="result-link" href="results/telugu/chandra_177509_telugu.pdf" target="_blank" rel="noopener"><span>Chandra OCR</span><span>PDF</span></a>
+                            <a class="result-link" href="results/telugu/SARVAM_177509_telugu.pdf" target="_blank" rel="noopener"><span>SARVAM OCR</span><span>PDF</span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="citation">
+            <h2 class="section-title">Citation</h2>
+            <div class="citation-box">
+                <p>
+                    Citation details can be updated after the official proceedings metadata is available.
+                </p>
+                <pre>@inproceedings{bhattacharya2026indicpageocr,
+  title     = {IndicPage-OCR: Adapting Vision-Language Models for Multilingual Handwritten Page Recognition},
+  author    = {Bhattacharya, Shaon and Mondal, Ajoy and Jawahar, C. V.},
+  booktitle = {Proceedings of the 17th IAPR International Workshop on Document Analysis Systems (DAS)},
+  year      = {2026},
+  note      = {Accepted paper}
+}</pre>
+            </div>
+        </section>
+
+        <footer class="footer">
+            IndicPage-OCR project page for DAS 2026.
+        </footer>
+    </main>
+
+    <script>
+        const tabButtons = document.querySelectorAll(".tab-btn");
+        const panels = document.querySelectorAll(".result-panel");
+
+        tabButtons.forEach((button) => {
+            button.addEventListener("click", () => {
+                tabButtons.forEach((tab) => tab.classList.remove("active"));
+                panels.forEach((panel) => panel.classList.remove("active"));
+
+                button.classList.add("active");
+                const target = document.querySelector(button.dataset.target);
+                if (target) {
+                    target.classList.add("active");
+                }
+            });
+        });
+    </script>
+</body>
+</html>
