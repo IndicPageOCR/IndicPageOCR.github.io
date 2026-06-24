@@ -367,6 +367,16 @@
 
         .model-view.active {
             display: block;
+            animation: fadeInResult 0.35s ease;
+        }
+
+        @keyframes fadeInResult {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
         }
 
         .preview-head {
@@ -919,21 +929,34 @@
         document.querySelectorAll(".result-panel").forEach((panel) => {
             const modelButtons = panel.querySelectorAll(".model-btn");
             const modelViews = panel.querySelectorAll(".model-view");
+            let currentIndex = 0;
 
-            modelButtons.forEach((button) => {
-                button.addEventListener("click", () => {
-                    const viewName = button.dataset.view;
+            function showModel(index) {
+                const button = modelButtons[index];
+                if (!button) return;
 
-                    modelButtons.forEach((item) => item.classList.remove("active"));
-                    modelViews.forEach((view) => view.classList.remove("active"));
+                const viewName = button.dataset.view;
 
-                    button.classList.add("active");
-                    const targetView = panel.querySelector(`.model-view[data-view="${viewName}"]`);
-                    if (targetView) {
-                        targetView.classList.add("active");
-                    }
-                });
+                modelButtons.forEach((item) => item.classList.remove("active"));
+                modelViews.forEach((view) => view.classList.remove("active"));
+
+                button.classList.add("active");
+                const targetView = panel.querySelector(`.model-view[data-view="${viewName}"]`);
+                if (targetView) {
+                    targetView.classList.add("active");
+                }
+
+                currentIndex = index;
+            }
+
+            modelButtons.forEach((button, index) => {
+                button.addEventListener("click", () => showModel(index));
             });
+
+            setInterval(() => {
+                if (!panel.classList.contains("active") || !modelButtons.length) return;
+                showModel((currentIndex + 1) % modelButtons.length);
+            }, 2800);
         });
     </script>
 </body>
