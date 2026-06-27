@@ -340,14 +340,15 @@
             display: block;
         }
 
-        .result-layout {
+        .comparison-layout {
             display: grid;
-            grid-template-columns: minmax(0, 1fr) minmax(280px, 300px);
-            gap: 20px;
+            grid-template-columns: minmax(260px, 0.82fr) minmax(0, 1.18fr);
+            gap: 22px;
             align-items: start;
         }
 
-        .result-preview {
+        .static-input,
+        .output-carousel {
             border: 1px solid var(--line);
             border-radius: 8px;
             overflow: hidden;
@@ -355,31 +356,39 @@
             box-shadow: 0 8px 22px rgba(34, 39, 51, 0.08);
         }
 
-        .result-preview img {
+        .static-input img,
+        .carousel-slide img {
             display: block;
             width: 100%;
             height: auto;
         }
 
-        .model-view {
-            display: none;
+        .output-carousel {
+            position: relative;
         }
 
-        .model-view.active {
-            display: block;
-            animation: fadeInResult 0.35s ease;
+        .carousel-window {
+            position: relative;
+            min-height: 520px;
+            background: #ffffff;
         }
 
-        @keyframes fadeInResult {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
+        .carousel-slide {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.55s ease, visibility 0.55s ease;
+            background: #ffffff;
         }
 
-        .preview-head {
+        .carousel-slide.active {
+            opacity: 1;
+            visibility: visible;
+            position: relative;
+        }
+
+        .slide-label {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -387,14 +396,10 @@
             padding: 12px 14px;
             background: var(--soft);
             border-bottom: 1px solid var(--line);
-        }
-
-        .preview-title {
             font-weight: 750;
-            color: var(--ink);
         }
 
-        .preview-head a {
+        .slide-label a {
             color: var(--blue);
             font-size: 13px;
             font-weight: 700;
@@ -402,80 +407,73 @@
             white-space: nowrap;
         }
 
-        .model-controls {
-            border: 1px solid var(--line);
-            border-radius: 8px;
-            padding: 16px;
-            background: var(--soft);
-        }
-
-        .model-controls h3 {
-            font-size: 18px;
-            margin-bottom: 12px;
-        }
-
-        .model-btn-list {
-            display: grid;
-            gap: 9px;
-        }
-
-        .model-btn {
-            width: 100%;
-            min-height: 40px;
-            padding: 9px 12px;
+        .carousel-arrow {
+            position: absolute;
+            top: 50%;
+            z-index: 3;
+            width: 38px;
+            height: 38px;
+            border: 1px solid rgba(34, 39, 51, 0.18);
+            border-radius: 50%;
             color: var(--ink);
+            background: rgba(255, 255, 255, 0.92);
+            font-size: 24px;
+            line-height: 1;
+            cursor: pointer;
+            transform: translateY(-50%);
+            box-shadow: 0 4px 14px rgba(34, 39, 51, 0.14);
+        }
+
+        .carousel-arrow:hover {
             background: #ffffff;
-            border: 1px solid var(--line);
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 700;
-            text-align: left;
+            border-color: var(--blue);
+            color: var(--blue);
+        }
+
+        .carousel-arrow.prev {
+            left: 12px;
+        }
+
+        .carousel-arrow.next {
+            right: 12px;
+        }
+
+        .carousel-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 14px 14px;
+            background: var(--soft);
+            border-top: 1px solid var(--line);
+        }
+
+        .carousel-dot {
+            width: 10px;
+            height: 10px;
+            border: 0;
+            border-radius: 50%;
+            background: #c9d2df;
             cursor: pointer;
         }
 
-        .model-btn.active {
-            color: #ffffff;
+        .carousel-dot.active {
             background: var(--blue);
-            border-color: var(--blue);
         }
 
-        .result-links {
-            border: 1px solid var(--line);
-            border-radius: 8px;
-            padding: 16px;
-            background: var(--soft);
-        }
-
-        .result-links h3 {
-            font-size: 18px;
-            margin-bottom: 12px;
-        }
-
-        .link-list {
-            display: grid;
-            gap: 9px;
-        }
-
-        .result-link {
+        .input-actions {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 14px;
-            min-height: 40px;
-            padding: 9px 12px;
-            color: var(--ink);
-            background: #ffffff;
-            border: 1px solid var(--line);
-            border-radius: 8px;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 650;
+            gap: 10px;
+            flex-wrap: wrap;
+            padding: 12px 14px;
+            background: var(--soft);
+            border-top: 1px solid var(--line);
         }
 
-        .result-link span:last-child {
+        .small-link {
             color: var(--blue);
-            font-size: 12px;
-            white-space: nowrap;
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
         }
 
         .citation-box {
@@ -522,8 +520,12 @@
 
             .stats-grid,
             .method-grid,
-            .result-layout {
+            .comparison-layout {
                 grid-template-columns: 1fr;
+            }
+
+            .carousel-window {
+                min-height: 360px;
             }
         }
 
@@ -689,7 +691,7 @@
         <section class="section" id="results">
             <h2 class="section-title">Qualitative Results</h2>
             <p class="lead">
-                Browse one sample per language and switch through the input page, ground truth, and each OCR output. Each preview also links to the full PDF.
+                Each language keeps the input page fixed while the model output panel cycles automatically every 3 seconds. Use the arrows or dots to inspect a specific model output.
             </p>
 
             <div class="tabs" role="tablist" aria-label="Language result tabs">
@@ -700,189 +702,157 @@
             </div>
 
             <div class="result-panel active" id="hindi">
-                <div class="result-layout">
-                    <div class="result-preview">
-                        <div class="model-view active" data-view="input">
-                            <div class="preview-head"><span class="preview-title">Input Page</span><a href="results/hindi/input_50777_hindi.pdf" target="_blank" rel="noopener">Open PDF</a></div>
-                            <img src="results/previews/hindi_input.png" alt="Hindi input page preview">
-                        </div>
-                        <div class="model-view" data-view="gt">
-                            <div class="preview-head"><span class="preview-title">Ground Truth</span><a href="results/hindi/gt_50777_hindi.pdf" target="_blank" rel="noopener">Open PDF</a></div>
-                            <img src="results/previews/hindi_gt.png" alt="Hindi ground truth preview">
-                        </div>
-                        <div class="model-view" data-view="ours">
-                            <div class="preview-head"><span class="preview-title">IndicPage-OCR</span><a href="results/hindi/Ours_50777_hindi.pdf" target="_blank" rel="noopener">Open PDF</a></div>
-                            <img src="results/previews/hindi_ours.png" alt="Hindi IndicPage-OCR result preview">
-                        </div>
-                        <div class="model-view" data-view="gemini">
-                            <div class="preview-head"><span class="preview-title">Gemini</span><a href="results/hindi/gemini_50777_hindi.pdf" target="_blank" rel="noopener">Open PDF</a></div>
-                            <img src="results/previews/hindi_gemini.png" alt="Hindi Gemini result preview">
-                        </div>
-                        <div class="model-view" data-view="deepseek">
-                            <div class="preview-head"><span class="preview-title">DeepSeek OCR</span><a href="results/hindi/deepseekocr_50777_hindi.pdf" target="_blank" rel="noopener">Open PDF</a></div>
-                            <img src="results/previews/hindi_deepseek.png" alt="Hindi DeepSeek OCR result preview">
-                        </div>
-                        <div class="model-view" data-view="chandra">
-                            <div class="preview-head"><span class="preview-title">Chandra OCR</span><a href="results/hindi/chandra_50777_hindi.pdf" target="_blank" rel="noopener">Open PDF</a></div>
-                            <img src="results/previews/hindi_chandra.png" alt="Hindi Chandra OCR result preview">
-                        </div>
-                        <div class="model-view" data-view="sarvam">
-                            <div class="preview-head"><span class="preview-title">SARVAM OCR</span><a href="results/hindi/SARVAM_50777_hindi.pdf" target="_blank" rel="noopener">Open PDF</a></div>
-                            <img src="results/previews/hindi_sarvam.png" alt="Hindi SARVAM OCR result preview">
+                <div class="comparison-layout">
+                    <div class="static-input">
+                        <div class="slide-label"><span>Input Image</span><a href="results/hindi/input_50777_hindi.pdf" target="_blank" rel="noopener">Open PDF</a></div>
+                        <img src="results/previews/hindi_input.png" alt="Hindi input page preview">
+                        <div class="input-actions">
+                            <a class="small-link" href="results/hindi/gt_50777_hindi.pdf" target="_blank" rel="noopener">Ground Truth PDF</a>
                         </div>
                     </div>
-                    <div class="model-controls">
-                        <h3>Hindi Sample</h3>
-                        <div class="model-btn-list">
-                            <button class="model-btn active" data-view="input" type="button">Input Page</button>
-                            <button class="model-btn" data-view="gt" type="button">Ground Truth</button>
-                            <button class="model-btn" data-view="ours" type="button">IndicPage-OCR</button>
-                            <button class="model-btn" data-view="gemini" type="button">Gemini</button>
-                            <button class="model-btn" data-view="deepseek" type="button">DeepSeek OCR</button>
-                            <button class="model-btn" data-view="chandra" type="button">Chandra OCR</button>
-                            <button class="model-btn" data-view="sarvam" type="button">SARVAM OCR</button>
+                    <div class="output-carousel" data-carousel>
+                        <button class="carousel-arrow prev" type="button" aria-label="Previous model output">&lsaquo;</button>
+                        <div class="carousel-window">
+                            <div class="carousel-slide active">
+                                <div class="slide-label"><span>IndicPage-OCR Output</span><a href="results/hindi/Ours_50777_hindi.pdf" target="_blank" rel="noopener">Open PDF</a></div>
+                                <img src="results/previews/hindi_ours.png" alt="Hindi IndicPage-OCR result preview">
+                            </div>
+                            <div class="carousel-slide">
+                                <div class="slide-label"><span>Gemini Output</span><a href="results/hindi/gemini_50777_hindi.pdf" target="_blank" rel="noopener">Open PDF</a></div>
+                                <img src="results/previews/hindi_gemini.png" alt="Hindi Gemini result preview">
+                            </div>
+                            <div class="carousel-slide">
+                                <div class="slide-label"><span>DeepSeek OCR Output</span><a href="results/hindi/deepseekocr_50777_hindi.pdf" target="_blank" rel="noopener">Open PDF</a></div>
+                                <img src="results/previews/hindi_deepseek.png" alt="Hindi DeepSeek OCR result preview">
+                            </div>
+                            <div class="carousel-slide">
+                                <div class="slide-label"><span>Chandra OCR Output</span><a href="results/hindi/chandra_50777_hindi.pdf" target="_blank" rel="noopener">Open PDF</a></div>
+                                <img src="results/previews/hindi_chandra.png" alt="Hindi Chandra OCR result preview">
+                            </div>
+                            <div class="carousel-slide">
+                                <div class="slide-label"><span>SARVAM OCR Output</span><a href="results/hindi/SARVAM_50777_hindi.pdf" target="_blank" rel="noopener">Open PDF</a></div>
+                                <img src="results/previews/hindi_sarvam.png" alt="Hindi SARVAM OCR result preview">
+                            </div>
                         </div>
+                        <button class="carousel-arrow next" type="button" aria-label="Next model output">&rsaquo;</button>
+                        <div class="carousel-dots" aria-label="Model output slide indicators"></div>
                     </div>
                 </div>
             </div>
 
             <div class="result-panel" id="bengali">
-                <div class="result-layout">
-                    <div class="result-preview">
-                        <div class="model-view active" data-view="input">
-                            <div class="preview-head"><span class="preview-title">Input Page</span><a href="results/bengali/input_152257_beng.pdf" target="_blank" rel="noopener">Open PDF</a></div>
-                            <img src="results/previews/bengali_input.png" alt="Bengali input page preview">
-                        </div>
-                        <div class="model-view" data-view="gt">
-                            <div class="preview-head"><span class="preview-title">Ground Truth</span><a href="results/bengali/gt_152257_beng.pdf" target="_blank" rel="noopener">Open PDF</a></div>
-                            <img src="results/previews/bengali_gt.png" alt="Bengali ground truth preview">
-                        </div>
-                        <div class="model-view" data-view="ours">
-                            <div class="preview-head"><span class="preview-title">IndicPage-OCR</span><a href="results/bengali/Ours_152257_beng.pdf" target="_blank" rel="noopener">Open PDF</a></div>
-                            <img src="results/previews/bengali_ours.png" alt="Bengali IndicPage-OCR result preview">
-                        </div>
-                        <div class="model-view" data-view="gemini">
-                            <div class="preview-head"><span class="preview-title">Gemini</span><a href="results/bengali/gemini_152257_beng.pdf" target="_blank" rel="noopener">Open PDF</a></div>
-                            <img src="results/previews/bengali_gemini.png" alt="Bengali Gemini result preview">
-                        </div>
-                        <div class="model-view" data-view="deepseek">
-                            <div class="preview-head"><span class="preview-title">DeepSeek OCR</span><a href="results/bengali/deepseekocr_152257_beng.pdf" target="_blank" rel="noopener">Open PDF</a></div>
-                            <img src="results/previews/bengali_deepseek.png" alt="Bengali DeepSeek OCR result preview">
-                        </div>
-                        <div class="model-view" data-view="chandra">
-                            <div class="preview-head"><span class="preview-title">Chandra OCR</span><a href="results/bengali/chandra_152257_beng.pdf" target="_blank" rel="noopener">Open PDF</a></div>
-                            <img src="results/previews/bengali_chandra.png" alt="Bengali Chandra OCR result preview">
-                        </div>
-                        <div class="model-view" data-view="sarvam">
-                            <div class="preview-head"><span class="preview-title">SARVAM OCR</span><a href="results/bengali/SARVAM_152257_beng.pdf" target="_blank" rel="noopener">Open PDF</a></div>
-                            <img src="results/previews/bengali_sarvam.png" alt="Bengali SARVAM OCR result preview">
+                <div class="comparison-layout">
+                    <div class="static-input">
+                        <div class="slide-label"><span>Input Image</span><a href="results/bengali/input_152257_beng.pdf" target="_blank" rel="noopener">Open PDF</a></div>
+                        <img src="results/previews/bengali_input.png" alt="Bengali input page preview">
+                        <div class="input-actions">
+                            <a class="small-link" href="results/bengali/gt_152257_beng.pdf" target="_blank" rel="noopener">Ground Truth PDF</a>
                         </div>
                     </div>
-                    <div class="model-controls">
-                        <h3>Bengali Sample</h3>
-                        <div class="model-btn-list">
-                            <button class="model-btn active" data-view="input" type="button">Input Page</button>
-                            <button class="model-btn" data-view="gt" type="button">Ground Truth</button>
-                            <button class="model-btn" data-view="ours" type="button">IndicPage-OCR</button>
-                            <button class="model-btn" data-view="gemini" type="button">Gemini</button>
-                            <button class="model-btn" data-view="deepseek" type="button">DeepSeek OCR</button>
-                            <button class="model-btn" data-view="chandra" type="button">Chandra OCR</button>
-                            <button class="model-btn" data-view="sarvam" type="button">SARVAM OCR</button>
+                    <div class="output-carousel" data-carousel>
+                        <button class="carousel-arrow prev" type="button" aria-label="Previous model output">&lsaquo;</button>
+                        <div class="carousel-window">
+                            <div class="carousel-slide active">
+                                <div class="slide-label"><span>IndicPage-OCR Output</span><a href="results/bengali/Ours_152257_beng.pdf" target="_blank" rel="noopener">Open PDF</a></div>
+                                <img src="results/previews/bengali_ours.png" alt="Bengali IndicPage-OCR result preview">
+                            </div>
+                            <div class="carousel-slide">
+                                <div class="slide-label"><span>Gemini Output</span><a href="results/bengali/gemini_152257_beng.pdf" target="_blank" rel="noopener">Open PDF</a></div>
+                                <img src="results/previews/bengali_gemini.png" alt="Bengali Gemini result preview">
+                            </div>
+                            <div class="carousel-slide">
+                                <div class="slide-label"><span>DeepSeek OCR Output</span><a href="results/bengali/deepseekocr_152257_beng.pdf" target="_blank" rel="noopener">Open PDF</a></div>
+                                <img src="results/previews/bengali_deepseek.png" alt="Bengali DeepSeek OCR result preview">
+                            </div>
+                            <div class="carousel-slide">
+                                <div class="slide-label"><span>Chandra OCR Output</span><a href="results/bengali/chandra_152257_beng.pdf" target="_blank" rel="noopener">Open PDF</a></div>
+                                <img src="results/previews/bengali_chandra.png" alt="Bengali Chandra OCR result preview">
+                            </div>
+                            <div class="carousel-slide">
+                                <div class="slide-label"><span>SARVAM OCR Output</span><a href="results/bengali/SARVAM_152257_beng.pdf" target="_blank" rel="noopener">Open PDF</a></div>
+                                <img src="results/previews/bengali_sarvam.png" alt="Bengali SARVAM OCR result preview">
+                            </div>
                         </div>
+                        <button class="carousel-arrow next" type="button" aria-label="Next model output">&rsaquo;</button>
+                        <div class="carousel-dots" aria-label="Model output slide indicators"></div>
                     </div>
                 </div>
             </div>
 
             <div class="result-panel" id="tamil">
-                <div class="result-layout">
-                    <div class="result-preview">
-                        <div class="model-view active" data-view="input">
-                            <div class="preview-head"><span class="preview-title">Input Page</span><a href="results/tamil/input_274994_tamil.pdf" target="_blank" rel="noopener">Open PDF</a></div>
-                            <img src="results/previews/tamil_input.png" alt="Tamil input page preview">
-                        </div>
-                        <div class="model-view" data-view="gt">
-                            <div class="preview-head"><span class="preview-title">Ground Truth</span><a href="results/tamil/gt_274994_tamil.pdf" target="_blank" rel="noopener">Open PDF</a></div>
-                            <img src="results/previews/tamil_gt.png" alt="Tamil ground truth preview">
-                        </div>
-                        <div class="model-view" data-view="ours">
-                            <div class="preview-head"><span class="preview-title">IndicPage-OCR</span><a href="results/tamil/Ours_274994_tamil.pdf" target="_blank" rel="noopener">Open PDF</a></div>
-                            <img src="results/previews/tamil_ours.png" alt="Tamil IndicPage-OCR result preview">
-                        </div>
-                        <div class="model-view" data-view="gemini">
-                            <div class="preview-head"><span class="preview-title">Gemini</span><a href="results/tamil/gemini_274994_tamil.pdf" target="_blank" rel="noopener">Open PDF</a></div>
-                            <img src="results/previews/tamil_gemini.png" alt="Tamil Gemini result preview">
-                        </div>
-                        <div class="model-view" data-view="deepseek">
-                            <div class="preview-head"><span class="preview-title">DeepSeek OCR</span><a href="results/tamil/deepseekocr_274994_tamil.pdf" target="_blank" rel="noopener">Open PDF</a></div>
-                            <img src="results/previews/tamil_deepseek.png" alt="Tamil DeepSeek OCR result preview">
-                        </div>
-                        <div class="model-view" data-view="chandra">
-                            <div class="preview-head"><span class="preview-title">Chandra OCR</span><a href="results/tamil/chandra_274994_tamil.pdf" target="_blank" rel="noopener">Open PDF</a></div>
-                            <img src="results/previews/tamil_chandra.png" alt="Tamil Chandra OCR result preview">
-                        </div>
-                        <div class="model-view" data-view="sarvam">
-                            <div class="preview-head"><span class="preview-title">SARVAM OCR</span><a href="results/tamil/SARVAM_274994_tamil.pdf" target="_blank" rel="noopener">Open PDF</a></div>
-                            <img src="results/previews/tamil_sarvam.png" alt="Tamil SARVAM OCR result preview">
+                <div class="comparison-layout">
+                    <div class="static-input">
+                        <div class="slide-label"><span>Input Image</span><a href="results/tamil/input_274994_tamil.pdf" target="_blank" rel="noopener">Open PDF</a></div>
+                        <img src="results/previews/tamil_input.png" alt="Tamil input page preview">
+                        <div class="input-actions">
+                            <a class="small-link" href="results/tamil/gt_274994_tamil.pdf" target="_blank" rel="noopener">Ground Truth PDF</a>
                         </div>
                     </div>
-                    <div class="model-controls">
-                        <h3>Tamil Sample</h3>
-                        <div class="model-btn-list">
-                            <button class="model-btn active" data-view="input" type="button">Input Page</button>
-                            <button class="model-btn" data-view="gt" type="button">Ground Truth</button>
-                            <button class="model-btn" data-view="ours" type="button">IndicPage-OCR</button>
-                            <button class="model-btn" data-view="gemini" type="button">Gemini</button>
-                            <button class="model-btn" data-view="deepseek" type="button">DeepSeek OCR</button>
-                            <button class="model-btn" data-view="chandra" type="button">Chandra OCR</button>
-                            <button class="model-btn" data-view="sarvam" type="button">SARVAM OCR</button>
+                    <div class="output-carousel" data-carousel>
+                        <button class="carousel-arrow prev" type="button" aria-label="Previous model output">&lsaquo;</button>
+                        <div class="carousel-window">
+                            <div class="carousel-slide active">
+                                <div class="slide-label"><span>IndicPage-OCR Output</span><a href="results/tamil/Ours_274994_tamil.pdf" target="_blank" rel="noopener">Open PDF</a></div>
+                                <img src="results/previews/tamil_ours.png" alt="Tamil IndicPage-OCR result preview">
+                            </div>
+                            <div class="carousel-slide">
+                                <div class="slide-label"><span>Gemini Output</span><a href="results/tamil/gemini_274994_tamil.pdf" target="_blank" rel="noopener">Open PDF</a></div>
+                                <img src="results/previews/tamil_gemini.png" alt="Tamil Gemini result preview">
+                            </div>
+                            <div class="carousel-slide">
+                                <div class="slide-label"><span>DeepSeek OCR Output</span><a href="results/tamil/deepseekocr_274994_tamil.pdf" target="_blank" rel="noopener">Open PDF</a></div>
+                                <img src="results/previews/tamil_deepseek.png" alt="Tamil DeepSeek OCR result preview">
+                            </div>
+                            <div class="carousel-slide">
+                                <div class="slide-label"><span>Chandra OCR Output</span><a href="results/tamil/chandra_274994_tamil.pdf" target="_blank" rel="noopener">Open PDF</a></div>
+                                <img src="results/previews/tamil_chandra.png" alt="Tamil Chandra OCR result preview">
+                            </div>
+                            <div class="carousel-slide">
+                                <div class="slide-label"><span>SARVAM OCR Output</span><a href="results/tamil/SARVAM_274994_tamil.pdf" target="_blank" rel="noopener">Open PDF</a></div>
+                                <img src="results/previews/tamil_sarvam.png" alt="Tamil SARVAM OCR result preview">
+                            </div>
                         </div>
+                        <button class="carousel-arrow next" type="button" aria-label="Next model output">&rsaquo;</button>
+                        <div class="carousel-dots" aria-label="Model output slide indicators"></div>
                     </div>
                 </div>
             </div>
 
             <div class="result-panel" id="telugu">
-                <div class="result-layout">
-                    <div class="result-preview">
-                        <div class="model-view active" data-view="input">
-                            <div class="preview-head"><span class="preview-title">Input Page</span><a href="results/telugu/input_telugu_177509.pdf" target="_blank" rel="noopener">Open PDF</a></div>
-                            <img src="results/previews/telugu_input.png" alt="Telugu input page preview">
-                        </div>
-                        <div class="model-view" data-view="gt">
-                            <div class="preview-head"><span class="preview-title">Ground Truth</span><a href="results/telugu/gt_177509_telugu.pdf" target="_blank" rel="noopener">Open PDF</a></div>
-                            <img src="results/previews/telugu_gt.png" alt="Telugu ground truth preview">
-                        </div>
-                        <div class="model-view" data-view="ours">
-                            <div class="preview-head"><span class="preview-title">IndicPage-OCR</span><a href="results/telugu/Ours_177509_telugu.pdf" target="_blank" rel="noopener">Open PDF</a></div>
-                            <img src="results/previews/telugu_ours.png" alt="Telugu IndicPage-OCR result preview">
-                        </div>
-                        <div class="model-view" data-view="gemini">
-                            <div class="preview-head"><span class="preview-title">Gemini</span><a href="results/telugu/gemini_177509_telugu.pdf" target="_blank" rel="noopener">Open PDF</a></div>
-                            <img src="results/previews/telugu_gemini.png" alt="Telugu Gemini result preview">
-                        </div>
-                        <div class="model-view" data-view="deepseek">
-                            <div class="preview-head"><span class="preview-title">DeepSeek OCR</span><a href="results/telugu/deepseekocr_177509_telugu.pdf" target="_blank" rel="noopener">Open PDF</a></div>
-                            <img src="results/previews/telugu_deepseek.png" alt="Telugu DeepSeek OCR result preview">
-                        </div>
-                        <div class="model-view" data-view="chandra">
-                            <div class="preview-head"><span class="preview-title">Chandra OCR</span><a href="results/telugu/chandra_177509_telugu.pdf" target="_blank" rel="noopener">Open PDF</a></div>
-                            <img src="results/previews/telugu_chandra.png" alt="Telugu Chandra OCR result preview">
-                        </div>
-                        <div class="model-view" data-view="sarvam">
-                            <div class="preview-head"><span class="preview-title">SARVAM OCR</span><a href="results/telugu/SARVAM_177509_telugu.pdf" target="_blank" rel="noopener">Open PDF</a></div>
-                            <img src="results/previews/telugu_sarvam.png" alt="Telugu SARVAM OCR result preview">
+                <div class="comparison-layout">
+                    <div class="static-input">
+                        <div class="slide-label"><span>Input Image</span><a href="results/telugu/input_telugu_177509.pdf" target="_blank" rel="noopener">Open PDF</a></div>
+                        <img src="results/previews/telugu_input.png" alt="Telugu input page preview">
+                        <div class="input-actions">
+                            <a class="small-link" href="results/telugu/gt_177509_telugu.pdf" target="_blank" rel="noopener">Ground Truth PDF</a>
                         </div>
                     </div>
-                    <div class="model-controls">
-                        <h3>Telugu Sample</h3>
-                        <div class="model-btn-list">
-                            <button class="model-btn active" data-view="input" type="button">Input Page</button>
-                            <button class="model-btn" data-view="gt" type="button">Ground Truth</button>
-                            <button class="model-btn" data-view="ours" type="button">IndicPage-OCR</button>
-                            <button class="model-btn" data-view="gemini" type="button">Gemini</button>
-                            <button class="model-btn" data-view="deepseek" type="button">DeepSeek OCR</button>
-                            <button class="model-btn" data-view="chandra" type="button">Chandra OCR</button>
-                            <button class="model-btn" data-view="sarvam" type="button">SARVAM OCR</button>
+                    <div class="output-carousel" data-carousel>
+                        <button class="carousel-arrow prev" type="button" aria-label="Previous model output">&lsaquo;</button>
+                        <div class="carousel-window">
+                            <div class="carousel-slide active">
+                                <div class="slide-label"><span>IndicPage-OCR Output</span><a href="results/telugu/Ours_177509_telugu.pdf" target="_blank" rel="noopener">Open PDF</a></div>
+                                <img src="results/previews/telugu_ours.png" alt="Telugu IndicPage-OCR result preview">
+                            </div>
+                            <div class="carousel-slide">
+                                <div class="slide-label"><span>Gemini Output</span><a href="results/telugu/gemini_177509_telugu.pdf" target="_blank" rel="noopener">Open PDF</a></div>
+                                <img src="results/previews/telugu_gemini.png" alt="Telugu Gemini result preview">
+                            </div>
+                            <div class="carousel-slide">
+                                <div class="slide-label"><span>DeepSeek OCR Output</span><a href="results/telugu/deepseekocr_177509_telugu.pdf" target="_blank" rel="noopener">Open PDF</a></div>
+                                <img src="results/previews/telugu_deepseek.png" alt="Telugu DeepSeek OCR result preview">
+                            </div>
+                            <div class="carousel-slide">
+                                <div class="slide-label"><span>Chandra OCR Output</span><a href="results/telugu/chandra_177509_telugu.pdf" target="_blank" rel="noopener">Open PDF</a></div>
+                                <img src="results/previews/telugu_chandra.png" alt="Telugu Chandra OCR result preview">
+                            </div>
+                            <div class="carousel-slide">
+                                <div class="slide-label"><span>SARVAM OCR Output</span><a href="results/telugu/SARVAM_177509_telugu.pdf" target="_blank" rel="noopener">Open PDF</a></div>
+                                <img src="results/previews/telugu_sarvam.png" alt="Telugu SARVAM OCR result preview">
+                            </div>
                         </div>
+                        <button class="carousel-arrow next" type="button" aria-label="Next model output">&rsaquo;</button>
+                        <div class="carousel-dots" aria-label="Model output slide indicators"></div>
                     </div>
                 </div>
             </div>
@@ -926,37 +896,57 @@
             });
         });
 
-        document.querySelectorAll(".result-panel").forEach((panel) => {
-            const modelButtons = panel.querySelectorAll(".model-btn");
-            const modelViews = panel.querySelectorAll(".model-view");
+        document.querySelectorAll("[data-carousel]").forEach((carousel) => {
+            const slides = Array.from(carousel.querySelectorAll(".carousel-slide"));
+            const prevButton = carousel.querySelector(".carousel-arrow.prev");
+            const nextButton = carousel.querySelector(".carousel-arrow.next");
+            const dotsWrap = carousel.querySelector(".carousel-dots");
             let currentIndex = 0;
+            let timer = null;
 
-            function showModel(index) {
-                const button = modelButtons[index];
-                if (!button) return;
+            function showSlide(index) {
+                if (!slides.length) return;
 
-                const viewName = button.dataset.view;
-
-                modelButtons.forEach((item) => item.classList.remove("active"));
-                modelViews.forEach((view) => view.classList.remove("active"));
-
-                button.classList.add("active");
-                const targetView = panel.querySelector(`.model-view[data-view="${viewName}"]`);
-                if (targetView) {
-                    targetView.classList.add("active");
-                }
-
-                currentIndex = index;
+                currentIndex = (index + slides.length) % slides.length;
+                slides.forEach((slide, slideIndex) => {
+                    slide.classList.toggle("active", slideIndex === currentIndex);
+                });
+                dotsWrap.querySelectorAll(".carousel-dot").forEach((dot, dotIndex) => {
+                    dot.classList.toggle("active", dotIndex === currentIndex);
+                });
             }
 
-            modelButtons.forEach((button, index) => {
-                button.addEventListener("click", () => showModel(index));
+            function startTimer() {
+                if (timer) clearInterval(timer);
+                timer = setInterval(() => {
+                    showSlide(currentIndex + 1);
+                }, 3000);
+            }
+
+            slides.forEach((_, index) => {
+                const dot = document.createElement("button");
+                dot.className = "carousel-dot" + (index === 0 ? " active" : "");
+                dot.type = "button";
+                dot.setAttribute("aria-label", `Show model output ${index + 1}`);
+                dot.addEventListener("click", () => {
+                    showSlide(index);
+                    startTimer();
+                });
+                dotsWrap.appendChild(dot);
             });
 
-            setInterval(() => {
-                if (!panel.classList.contains("active") || !modelButtons.length) return;
-                showModel((currentIndex + 1) % modelButtons.length);
-            }, 2800);
+            prevButton.addEventListener("click", () => {
+                showSlide(currentIndex - 1);
+                startTimer();
+            });
+
+            nextButton.addEventListener("click", () => {
+                showSlide(currentIndex + 1);
+                startTimer();
+            });
+
+            showSlide(0);
+            startTimer();
         });
     </script>
 </body>
