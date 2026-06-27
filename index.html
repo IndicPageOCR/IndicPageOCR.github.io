@@ -130,6 +130,32 @@
             border-color: var(--line);
         }
 
+        .nav-btn.hf {
+            gap: 8px;
+            color: #2f2500;
+            background: #ffcc4d;
+            border-color: #f1b928;
+        }
+
+        .nav-btn.hf:hover {
+            background: #f2ba2f;
+            border-color: #dfa716;
+        }
+
+        .hf-mark {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            color: #2f2500;
+            background: rgba(255, 255, 255, 0.55);
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0;
+        }
+
         .nav-btn.disabled {
             color: #7b8494;
             background: #f0f2f6;
@@ -571,7 +597,8 @@
             <a class="nav-btn primary" href="#overview">Overview</a>
             <a class="nav-btn" href="#method">Method</a>
             <a class="nav-btn" href="#results">Results</a>
-            <a class="nav-btn secondary" href="images/Introduction_2.pdf" target="_blank" rel="noopener">Teaser PDF</a>
+            <a class="nav-btn hf" href="https://huggingface.co/spaces/SHAON123/indicpage-ocr-demo" target="_blank" rel="noopener"><span class="hf-mark">HF</span>Live Demo</a>
+            <a class="nav-btn hf" href="https://huggingface.co/SHAON123/models" target="_blank" rel="noopener"><span class="hf-mark">HF</span>Models</a>
             <a class="nav-btn disabled" href="#" aria-disabled="true">Paper Coming Soon</a>
             <a class="nav-btn disabled" href="#" aria-disabled="true">Code Coming Soon</a>
         </nav>
